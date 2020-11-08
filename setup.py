@@ -10,7 +10,7 @@ from typing import List
 import torch
 from torch.utils.cpp_extension import CUDA_HOME, CppExtension, CUDAExtension
 from torch.utils.hipify import hipify_python
-
+# import hipify_cloned as hipify_python
 torch_ver = [int(x) for x in torch.__version__.split(".")[:2]]
 assert torch_ver >= [1, 4], "Requires PyTorch >= 1.4"
 
