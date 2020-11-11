@@ -5,7 +5,7 @@ import torch
 
 from detectron2.checkpoint import DetectionCheckpointer
 from detectron2.engine import DefaultPredictor
-from detectron2.data import MetadataCatalog
+from detectron2.data import MetadataCatalog, build_detection_test_loader, DatasetMapper
 from detectron2.data.datasets import register_coco_instances
 from detectron2.engine import DefaultTrainer
 from detectron2.evaluation import COCOEvaluator
@@ -21,14 +21,7 @@ import cv2
 import numpy as np
 import requests
 
-
-class CocoTrainer(DefaultTrainer):
-    @classmethod
-    def build_evaluator(cls, cfg, dataset_name, output_folder=None):
-        if output_folder is None:
-            makedirs("coco_eval", exist_ok=True)
-            output_folder = "coco_eval"
-        return COCOEvaluator(dataset_name, cfg, False, output_folder)
+from model_runs.custom_trainer import CustomValTrainer
 
 
 def register_datasets():
@@ -83,13 +76,15 @@ def run_train():
 
     checkpointer = DetectionCheckpointer(build_model(cfg), save_dir=cfg.OUTPUT_DIR)
     checkpointer.save("model_faster_rcnn_unscaled")  # save to output/model_999.pth
-    trainer = CocoTrainer(cfg)
+    trainer = CustomValTrainer(cfg)
     trainer.resume_or_load(resume=False)
     trainer.train()
 
-def evaluate():
+
+def evaluate_saved_model():
+    pass
 
 
 if __name__ == '__main__':
+    run_train()
     # run_train()
-    evaluate()
